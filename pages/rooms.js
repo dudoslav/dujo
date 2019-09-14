@@ -2,7 +2,8 @@ import {useState, useEffect} from 'react'
 import WebSocket from 'isomorphic-ws'
 import YouTube from 'react-youtube'
 
-import {HOST, API_HEADERS, UI_PORT, WS_PORT, MAX_DELTA} from '../constants'
+import {API_HEADERS, MAX_DELTA} from '../constants'
+import {HOST, REMOTE_UI_PORT, REMOTE_WS_PORT} from '../config'
 import {c_msg} from '../common'
 
 const renderVideos = videos =>
@@ -19,7 +20,7 @@ const Room = props => {
   let [player, setPlayer] = useState()
 
   useEffect(() => {
-    socket = new WebSocket(`ws://${HOST}:${WS_PORT}`)
+    socket = new WebSocket(`ws://${HOST}:${REMOTE_WS_PORT}`)
     socket.onopen = () => {
       socket.send(c_msg('subscribe', { id: room.id }))
       socket.onmessage = e => setRoom(JSON.parse(e.data).data)
@@ -58,7 +59,7 @@ const Room = props => {
   }, [room])
 
   const addSong = () => {
-    fetch(`http://${HOST}:${UI_PORT}/api/rooms/${room.id}/videos`,
+    fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms/${room.id}/videos`,
       { headers: API_HEADERS,
         method: 'POST',
         body: JSON.stringify({video: input})})

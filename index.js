@@ -5,7 +5,7 @@ import webSocket from 'nodejs-websocket'
 import youtubeApi from 'better-youtube-api'
 import moment from 'moment'
 
-import { UI_PORT, WS_PORT } from './constants'
+import { LOCAL_UI_PORT, LOCAL_WS_PORT } from './config'
 import { r_id, c_msg } from './common'
 
 const youtube = new youtubeApi(process.env.API_KEY)
@@ -44,7 +44,7 @@ webSocket.createServer(socket => {
   socket.on('close', () => {
     subscribers.filter(e => e.socket !== socket)
   })
-}).listen(WS_PORT)
+}).listen(LOCAL_WS_PORT)
 
 let f_time = Date.now()
 setInterval(() => {
@@ -104,5 +104,5 @@ napp.prepare().then(() => {
   })
 
   app.get('*', nappHandler)
-  server.listen(UI_PORT)
+  server.listen(LOCAL_UI_PORT)
 })

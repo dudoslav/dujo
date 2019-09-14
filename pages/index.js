@@ -2,7 +2,8 @@ import Link from 'next/link'
 import {useState} from 'react'
 import fetch from 'isomorphic-unfetch'
 
-import {HOST, API_HEADERS, UI_PORT} from '../constants'
+import {API_HEADERS} from '../constants'
+import {REMOTE_UI_PORT, HOST} from '../config'
 
 const renderRooms = rooms =>
   Object.values(rooms)
@@ -18,12 +19,13 @@ const Index = props => {
   let [rooms, setRooms] = useState(props.rooms)
 
   const createRoom = async () => {
-    const c_res = await fetch(`http://${HOST}:${UI_PORT}/api/rooms`,
+    console.log(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`)
+    const c_res = await fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`,
       { method: 'POST',
         headers: API_HEADERS,
         body: JSON.stringify({name}) })
     const room = await c_res.json()
-    const r_res = await fetch(`http://${HOST}:${UI_PORT}/api/rooms`,
+    const r_res = await fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`,
       { headers: API_HEADERS })
     const r_rooms = await r_res.json()
     setRooms(r_rooms.rooms)
