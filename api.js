@@ -7,7 +7,7 @@ import { r_id } from './lib/common'
 const youtube = new youtubeApi(process.env.API_KEY)
 const api = express()
 
-let rooms = {}
+let rooms
 
 api.use(express.json())
 
@@ -17,6 +17,11 @@ api.get('/rooms', (_, res) => {
 
 api.post('/rooms', (req, res) => {
   const { name } = req.body
+  if (!name || name == '') {
+    req.json({ error: 'invalid name' })
+    return
+  }
+
   const id = r_id()
 
   rooms[id] = { id, name, videos: [], idle: 0, subscribers: 0 }
