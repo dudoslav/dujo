@@ -32,7 +32,7 @@ const parse_id = url => {
 api.get('/rooms/:id', (req, res) => {
   const room = rooms[req.params.id]
   if (!room) res.json({ error: 'room not found' })
-  res.json({ room })
+  else res.json({ room })
 })
 
 api.post('/rooms/:id/videos', async (req, res) => {

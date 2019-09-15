@@ -95,7 +95,10 @@ const Room = props => {
 Room.getInitialProps = async ({query, res}) => {
   const { id } = query
   const room = await getRoom(id)
-  if (room.error) res.redirect('/')
+  if (room.error) {
+      res.redirect('/')
+      return
+  }
   return room
 }
 
