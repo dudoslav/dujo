@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import {useState} from 'react'
-import fetch from 'isomorphic-unfetch'
 
-import {API_HEADERS} from '../constants'
-import {REMOTE_UI_PORT, HOST} from '../config'
+import Layout from '../components/layout'
+import {getRooms, postRooms} from '../lib/service'
 
 const renderRooms = rooms =>
   Object.values(rooms)
@@ -19,28 +18,23 @@ const Index = props => {
   let [rooms, setRooms] = useState(props.rooms)
 
   const createRoom = async () => {
-    console.log(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`)
-    const c_res = await fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`,
-      { method: 'POST',
-        headers: API_HEADERS,
-        body: JSON.stringify({name}) })
-    const room = await c_res.json()
-    const r_res = await fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms`,
-      { headers: API_HEADERS })
-    const r_rooms = await r_res.json()
+    const room = await postRooms(name)
+    const r_rooms = await getRooms()
     setRooms(r_rooms.rooms)
   }
 
   return (
-    <main>
+    <Layout>
       <h1>Welcome to DuJo</h1>
       {renderRooms(rooms)}
       <input type='text' value={name} onChange={e => setName(e.target.value)}/>
       <button onClick={createRoom}>Create Room</button>
-    </main>
+    </Layout>
   )
 }
 
-Index.getInitialProps = async ({ query }) => query
+Index.getInitialProps = async () => {
+  return await getRooms()
+}
 
 export default Index

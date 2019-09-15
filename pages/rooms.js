@@ -1,10 +1,13 @@
 import {useState, useEffect} from 'react'
+import Router from 'next/router'
 import WebSocket from 'isomorphic-ws'
 import YouTube from 'react-youtube'
 
-import {API_HEADERS, MAX_DELTA} from '../constants'
-import {HOST, REMOTE_UI_PORT, REMOTE_WS_PORT} from '../config'
-import {c_msg} from '../common'
+import Layout from '../components/layout'
+import {addVideo, getRoom} from '../lib/service'
+import {c_msg} from '../lib/common'
+import {MAX_DELTA} from '../lib/constants'
+import {HOST, REMOTE_WS_PORT} from '../config'
 
 const renderVideos = videos =>
   videos.map(v =>
@@ -23,13 +26,21 @@ const Room = props => {
     socket = new WebSocket(`ws://${HOST}:${REMOTE_WS_PORT}`)
     socket.onopen = () => {
       socket.send(c_msg('subscribe', { id: room.id }))
-      socket.onmessage = e => setRoom(JSON.parse(e.data).data)
+      socket.onmessage = e => {
+        const msg = JSON.parse(e.data)
+        if (msg.type == 'sync') {
+          if (!msg.data) {
+            socket.close()
+            Router.push('/')
+            return
+          }
+          setRoom(msg.data)
+        }
+      }
     }
   }, [])
 
   useEffect(() => {
-    if (!local) return //TODO: reroute to home
-
     const l_video = local.videos[0]
     const r_video = room.videos[0]
 
@@ -39,7 +50,7 @@ const Room = props => {
     }
 
     if (l_video && !r_video) {
-      setLocal(r_video)
+      setLocal(room)
       player.stopVideo()
     }
 
@@ -58,11 +69,8 @@ const Room = props => {
     }
   }, [room])
 
-  const addSong = () => {
-    fetch(`http://${HOST}:${REMOTE_UI_PORT}/api/rooms/${room.id}/videos`,
-      { headers: API_HEADERS,
-        method: 'POST',
-        body: JSON.stringify({video: input})})
+  const onAddVideoClick = () => {
+    addVideo(room.id, input)
     setInput('')
   }
 
@@ -73,16 +81,21 @@ const Room = props => {
   }
 
   return (
-    <div>
+    <Layout>
       <h2>{room.name}</h2>
       <input type='text' value={input} onChange={e => setInput(e.target.value)}/>
-      <button onClick={addSong}>Add Video</button>
+      <button onClick={onAddVideoClick}>Add Video</button>
       <YouTube opts={{width: '640', height: '390'}} onReady={onReady}/>
       {renderVideos(room.videos)}
-    </div>
+    </Layout>
   )
 }
 
-Room.getInitialProps = async ({ query }) => query
+Room.getInitialProps = async ({query, res}) => {
+  const { id } = query
+  const room = await getRoom(id)
+  if (room.error) res.redirect('/')
+  return room
+}
 
 export default Room
