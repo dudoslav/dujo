@@ -31,7 +31,7 @@ webSocket.createServer(socket => {
   })
   
   socket.on('close', () => {
-    subscribers.filter(e => e.socket !== socket)
+    subscribers = subscribers.filter(e => e.socket !== socket)
   })
 }).listen(LOCAL_WS_PORT)
 
