@@ -19,7 +19,7 @@ api.post('/rooms', (req, res) => {
   const { name } = req.body
   const id = r_id()
 
-  rooms[id] = { id, name, videos: [], idle: 0 }
+  rooms[id] = { id, name, videos: [], idle: 0, subscribers: 0 }
   res.json({ id })
 })
 

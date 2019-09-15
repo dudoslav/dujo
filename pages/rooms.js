@@ -86,6 +86,7 @@ const Room = props => {
       <input type='text' value={input} onChange={e => setInput(e.target.value)}/>
       <button onClick={onAddVideoClick}>Add Video</button>
       <YouTube opts={{width: '640', height: '390'}} onReady={onReady}/>
+      <h4>Watching: {room.subscribers}</h4>
       {renderVideos(room.videos)}
     </Layout>
   )

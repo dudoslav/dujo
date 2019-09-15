@@ -43,6 +43,7 @@ setInterval(() => {
   })
 
   Object.values(rooms).forEach(room => {
+    room.subscribers = subscribers.filter(({ room_id }) => room_id == room.id).length
     const video = room.videos[0]
     const delta = Date.now() - f_time
     if (!video) {
