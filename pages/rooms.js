@@ -7,7 +7,7 @@ import Layout from '../components/layout'
 import {addVideo, getRoom} from '../lib/service'
 import {c_msg} from '../lib/common'
 import {MAX_DELTA} from '../lib/constants'
-import {HOST, REMOTE_WS_PORT} from '../config'
+import {WS_PROTO} from '../config'
 
 const renderVideos = videos =>
   videos.map(v =>
@@ -23,7 +23,7 @@ const Room = props => {
   let [player, setPlayer] = useState()
 
   useEffect(() => {
-    socket = new WebSocket(`ws://${HOST}:${REMOTE_WS_PORT}`)
+    socket = new WebSocket(`${WS_PROTO}://${window.location.host}`)
     socket.onopen = () => {
       socket.send(c_msg('subscribe', { id: room.id }))
       socket.onmessage = e => {

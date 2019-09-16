@@ -1,14 +1,17 @@
 import express from 'express'
 import next from 'next'
-import webSocket from 'nodejs-websocket'
+import http from 'http'
+import ws from 'ws'
 
-import { LOCAL_UI_PORT, LOCAL_WS_PORT, DEV } from './config'
-import { c_msg } from './lib/common'
-import { MAX_IDLE_TIME } from './lib/constants'
+import {SERVER_PORT, DEV} from './config'
+import {c_msg} from './lib/common'
+import {MAX_IDLE_TIME} from './lib/constants'
 
 import api from './api'
 
 const app = express()
+const server = http.createServer(app);
+const wss = new ws.Server({ server });
 
 const napp = next({ dev: DEV })
 const nappHandler = napp.getRequestHandler()
@@ -17,8 +20,8 @@ let subscribers = []
 let rooms = {}
 
 /* WS Code */
-webSocket.createServer(socket => {
-  socket.on('text', text => {
+wss.on('connection', socket => {
+  socket.on('message', text => {
     const msg = JSON.parse(text)
 
     switch (msg.type) {
@@ -33,7 +36,7 @@ webSocket.createServer(socket => {
   socket.on('close', () => {
     subscribers = subscribers.filter(e => e.socket !== socket)
   })
-}).listen(LOCAL_WS_PORT)
+})
 
 let f_time = Date.now()
 setInterval(() => {
@@ -62,17 +65,11 @@ setInterval(() => {
 
 /* HTTP Code */
 napp.prepare().then(() => {
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'dudo.cool')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    next()
-  })
-
   app.use('/api', api(rooms))
 
   app.get('/rooms/:id', (req, res) => napp.render(req, res, '/rooms',
     { id: req.params.id}))
 
   app.get('*', nappHandler)
-  app.listen(LOCAL_UI_PORT)
+  server.listen(SERVER_PORT)
 })
