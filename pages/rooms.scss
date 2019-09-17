@@ -1,0 +1,46 @@
+@import "../theme/theme";
+
+.rooms {
+  h2 {
+    color: $c-7;
+    margin-top: 0;
+  }
+
+  h4 {
+    color: $c-7;
+  }
+
+  .container {
+    @include medium {
+      width: 50%;
+      display: flex;
+      margin: auto;
+    }
+
+    .player {
+      flex: 1;
+      border: 3px solid $c-7;
+    }
+
+    .videos {
+      display: block;
+      flex: 1;
+    }
+
+    .video {
+      background-color: $c-3;
+      color: $c-1;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap; 
+      padding: 1rem;
+
+      a {
+        color: $c-1;
+        &:visited {
+          color: $c-1;
+        }
+      }
+    }
+  }
+}

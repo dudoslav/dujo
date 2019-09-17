@@ -1,0 +1,15 @@
+@import "../theme/theme";
+
+.textsubmit {
+  @include medium {
+    display: flex;
+  }
+
+  button {
+    flex: 1;
+  }
+
+  input[type=text] {
+    flex: 3;
+  }
+}

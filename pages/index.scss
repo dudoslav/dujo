@@ -1,0 +1,31 @@
+@import "../theme/theme";
+
+.index {
+  .container {
+    width: 100%;
+
+    @include medium {
+      width: 50%;
+      margin: auto;
+    }
+  }
+
+  .roomitem {
+    cursor: pointer;
+    display: flex;
+    padding: 1rem;
+    background-color: $c-7;
+    
+    h3 {
+      flex: 1;
+      margin: 0;
+    }
+
+    span {
+      flex: 1;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap; 
+    }
+  }
+}

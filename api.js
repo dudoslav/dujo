@@ -18,7 +18,7 @@ api.get('/rooms', (_, res) => {
 api.post('/rooms', (req, res) => {
   const { name } = req.body
   if (!name || name == '') {
-    req.json({ error: 'invalid name' })
+    res.json({ error: 'invalid name' })
     return
   }
 

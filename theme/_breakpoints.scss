@@ -1,0 +1,7 @@
+$size-mobile: 900px;
+
+@mixin medium {
+	@media screen and (min-width: $size-mobile) {
+		@content;
+	}
+}

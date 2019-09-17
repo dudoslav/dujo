@@ -1,9 +1,13 @@
 import Link from 'next/link'
 
+import './header.scss'
+
 export default () => (
-  <nav>
+  <div className='header'>
     <Link href="/">
-      <a>Home</a>
+      <a>
+        <h1>Welcome to DuJo</h1>
+      </a>
     </Link>
-  </nav>
+  </div>
 )

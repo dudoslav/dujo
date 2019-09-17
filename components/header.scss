@@ -1,0 +1,14 @@
+@import "../theme/theme";
+
+.header {
+  padding: 2rem;
+
+  a {
+    text-decoration: none;
+    color: $c-3;
+  }
+
+  h1 {
+    margin: 0;
+  }
+}
